@@ -29,7 +29,7 @@ app.post('/checkout', async (req, res) => {
             price_data: {
                 currency: 'usd',
                 product_data: {
-                    name: item.name
+                    name: item.name,
                     images: [`https://raw.githubusercontent.com/edukated6/Dee-s-Treats-Website/main/${item.image}`]
                 },
                 unit_amount: Math.round(item.price * 100)
@@ -115,4 +115,10 @@ app.get('/cancel', (req, res) => {
     res.redirect('https://edukated6.github.io/Dee-s-Treats-Website/cart.html')
 })
 
-app.listen(3000, () => console.log('Server started on port 3000'))
+// Export for Vercel serverless functions
+module.exports = app
+
+// Only listen when running locally (not on Vercel)
+if (require.main === module) {
+    app.listen(3000, () => console.log('Server started on port 3000'))
+}
