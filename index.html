@@ -1,0 +1,130 @@
+<!DOCTYPE hmtl>
+<html lang="en">
+<head>
+    <title>Dee's Treats</title>
+    <link rel="icon" type="image/png" href="svgs\Dee's Treats Favicon.svg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--Stylesheets here-->
+    <link rel="stylesheet" href="css\styles.css">
+    <script src="java/app.js" defer></script>
+</head> 
+<body>
+<!--Main Hero w Hamburg Menu-->
+    <div class="main-hero-nav">
+    <a href="#top"><img class="logo" src="pngs\Dee's Treats Logo 2026.png" alt="dee's treats logo" height="100" width="220"></a>
+        <ul class="nav-list">
+            <li><a href="#Treats">Treats</a></li>
+            <li><a href="#review">Reviews</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    <a href="cart.html" class="cart-icon-wrapper"><img class="shopping-cart" src="svgs\shopping cart.svg" alt="Shopping Icon" type="image/svg" height="35" width="35">
+    <span id="cart-count" class="cart-count">0</span>
+    </a>
+    <div class="off-screen-menu">
+      <ul>
+        <li><a href="#Treats">Treats</a></li>
+        <li><a href="#review">Reviews</a></li>
+        <li><a href="contact.html">Contact Me</a></li>
+        <li><a href="cart.html">My Cart</a></li>
+      </ul>
+    </div>
+    <nav>
+      <div class="ham-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </nav>
+    </div>
+    <main>
+        <section class="product-intro" id="top">
+            <img src="moving media\moving cookies loop.webp" type="image/webp" class="hero-cookies">
+            <h2 class="product-intro-head">Always treat yourself.</h2>
+            <p class="product-intro-body">Dee’s Treats, proudly based in Ridgeland, Mississippi,<br>
+                                         specializes in gourmet desserts designed to hit every sweet spot.<br>
+                                         Whether you’re celebrating something special or just treating yourself,<br> 
+                                         we create fresh, flavorful sweets that are as memorable as they are delicious.</p>
+        </section>
+    <hr>
+        <section class="all-treats" id="Treats">
+            <h2 class="product-title">Shop Treats by Dee</h2>
+        </section>
+        <div class="products-container">
+            <ul class="product-list">
+                <li class="products">
+                    <img src="pngs\chocolate chip.png" alt="Chocalate Cookie" type="image/png" width="350" height="350">
+                    <h3>Lorem ipsum dolor</h3>
+                    <p>$1.00</p>
+                    <button onclick="addToCart('Chocolate Chip Cookie',1,'pngs/chocolate chip.png')" type="submit">Add to Cart</button>
+                </li>
+                <li class="products">
+                   <img src="pngs\chocolate.png" alt="Chocalate Cookie" type="image/png" width="350" height="350">
+                   <h3>Lorem ipsum dolor</h3>
+                   <p>$2.00</p>
+                   <button onclick="addToCart('Chocolate Cookie',2,'pngs/chocolate.png')" type="submit">Add to Cart</button>
+                </li>
+                <li class="products">
+                    <img src="pngs\heart.png" alt="Chocalate Cookie" type="image/png" width="350" height="350">
+                    <h3>Lorem ipsum dolor</h3>
+                    <p>$3.00</p>
+                    <button onclick="addToCart('Heart Cookie',3,'pngs/heart.png')" type="submit">Add to Cart</button>
+                </li>
+                <li class="products">
+                    <img src="svgs\coming soon.svg" alt="Chocalate Cookie" type="image/png" width="350" height="350">
+                    <h3>Lorem ipsum dolor</h3>
+                    <p>$4.00</p>
+                    <button type="submit">Add to Cart</button>
+                </li>
+                <li class="products">
+                    <img src="svgs\coming soon.svg" alt="Chocalate Cookie" type="image/png" width="350" height="350">
+                    <h3>Lorem ipsum dolor</h3>
+                    <p>$5.00</p>
+                    <button type="submit">Add to Cart</button>
+                </li>
+                <li class="products">
+                    <img src="svgs\coming soon.svg" alt="Chocalate Cookie" type="image/png" width="350" height="350">
+                    <h3>Lorem ipsum dolor</h3>
+                    <p>$6.00</p>
+                    <button type="submit">Add to Cart</button>
+                </li>
+            </ul>
+        </div>
+        <section class="reviews" id="review">
+            <h2>Reviews of Treats</h2>
+            <article>
+                <h3>John Doe, Ridgeland</h3>
+                <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit,<br>
+                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<br> 
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco<br>
+                laboris nisi ut aliquip ex ea commodo consequat.<br></p>
+            </article>
+            <article>
+                <h3>John Doe, Hazlehurst</h3>
+                <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit,<br>
+                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<br> 
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco<br>
+                laboris nisi ut aliquip ex ea commodo consequat.<br></p>
+            </article>
+            <article>
+                <h3>John Doe, McComb</h3>
+                <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit,<br>
+                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<br> 
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco<br>
+                laboris nisi ut aliquip ex ea commodo consequat.<br></p>
+            </article>
+            <article>
+                <h3>John Doe, Madison</h3>
+                <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit,<br>
+                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<br> 
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco<br>
+                laboris nisi ut aliquip ex ea commodo consequat.<br></p>
+            </article>
+        </section>
+        </main>
+</body>
+<div id="cart-toast" class="cart-toast">Item added to cart!</div>
+<footer class="footer">
+<p class="copyright">©2026 Dee's Treat  ·  All Rights Reserved</p>
+</footer>
+</html>

@@ -1,0 +1,117 @@
+require('dotenv').config()
+const express = require('express')
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+
+const app = express()
+
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
+
+app.use(express.static('../'))
+
+app.set('view engine', 'ejs')
+
+app.get('/', (req, res) => {
+    res.sendFile('cart.html', { root: '../' })
+})
+
+app.post('/checkout', async (req, res) => {
+    try {
+        const cart = JSON.parse(req.body.cart || '[]')
+        console.log('Cart received:', cart)
+
+        if (cart.length === 0) {
+            return res.status(400).send('Cart is empty')
+        }
+
+        const line_items = cart.map(item => ({
+            price_data: {
+                currency: 'usd',
+                product_data: {
+                    name: item.name
+                    // images: [`http://localhost:3000/${encodeURIComponent(item.image)}`]
+                },
+                unit_amount: Math.round(item.price * 100)
+            },
+            quantity: item.quantity
+        }))
+
+        console.log('Line items:', line_items)
+
+        const session = await stripe.checkout.sessions.create({
+            line_items,
+            mode: 'payment',
+            shipping_address_collection: {
+                allowed_countries: ['US']
+            },
+            success_url: `http://localhost:3000/complete?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `http://localhost:3000/cancel`
+        })
+
+        res.redirect(session.url)
+    } catch (error) {
+        console.error('Checkout error:', error)
+        res.status(400).send('Error processing checkout: ' + error.message)
+    }
+})
+
+app.get('/complete', async (req, res) => {
+    const result = Promise.all([stripe.checkout.sessions.retrieve(req.query.session_id, { expand: ['payment_intent.payment_method'] }),
+    stripe.checkout.sessions.listLineItems(req.query.session_id)
+])
+
+    console.log(JSON.stringify(await result))
+
+    res.send(`
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Order Complete | Dee's Treats</title>
+        <link rel="icon" type="image/png" href="/svgs/dee treats logo.svg">
+        <link rel="stylesheet" href="/css/cartstyle.css">
+      </head>
+      <body>
+        <div class="main-hero-nav">
+          <a href="/index.html"><img class="logo" src="/pngs/Dee's Treats Logo 2026.png" alt="dee's treats logo" height="100" width="220"></a>
+          <ul class="nav-list">
+            <li><a href="/index.html#Treats">Treats</a></li>
+            <li><a href="/index.html#review">Reviews</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+          </ul>
+          <a href="/cart.html" class="cart-icon-wrapper"><img class="shopping-cart" src="/svgs/shopping cart.svg" alt="Shopping Icon" height="35" width="35"><span id="cart-count" class="cart-count">0</span></a>
+        </div>
+
+        <main>
+          <section class="cart-section" style="padding-top:180px; text-align:center;">
+            <h2 class="cart-title">Thank You!</h2>
+            <p style="font-size:1.8rem; color:#fff; filter: drop-shadow(1px 1px 1px black);">Your payment was successful and your order is confirmed.</p>
+            <p style="font-size:1.2rem; color:#fff; margin-bottom:30px;">Your cart has been emptied so you can start a new order.</p>
+            <a href="/index.html" class="checkout-btn" style="display:inline-block; margin-top:20px;">Continue Shopping</a>
+          </section>
+        </main>
+
+        <footer class="footer" style="text-align:center; padding:20px; color:white; background:rgba(0,0,0,0.2);">
+          <p class="copyright">©2026 Dee's Treat · All Rights Reserved</p>
+        </footer>
+
+        <script>
+          try {
+            localStorage.removeItem('cart');
+            const cartCount = document.getElementById('cart-count');
+            if (cartCount) cartCount.textContent = '0';
+          } catch (error) {
+            console.warn('Could not clear cart in browser:', error);
+          }
+        </script>
+      </body>
+      </html>
+    `)
+})
+
+app.get('/cancel', (req, res) => {
+    res.redirect('../cart.html')
+})
+
+app.listen(3000, () => console.log('Server started on port 3000'))
