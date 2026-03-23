@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/index.js": {
-      "runtime": "nodejs@18"
+      "runtime": "@vercel/node"
     }
   },
   "routes": [
