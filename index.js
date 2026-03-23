@@ -4,9 +4,16 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 const app = express()
 
-// Enable CORS for GitHub Pages
+// Enable CORS for GitHub Pages and Vercel deployments
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://edukated6.github.io')
+  const allowedOrigins = [
+    'https://edukated6.github.io',
+    'https://dee-s-treats-website-git-main-edukated6s-projects.vercel.app'
+  ]
+  const origin = req.headers.origin
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin)
+  }
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
   if (req.method === 'OPTIONS') {
