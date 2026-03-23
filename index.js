@@ -7,12 +7,13 @@ const app = express()
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
-app.use(express.static('../'))
+// Remove static file serving - frontend will be on GitHub Pages
+// app.use(express.static('../'))
 
 app.set('view engine', 'ejs')
 
 app.get('/', (req, res) => {
-    res.sendFile('cart.html', { root: '../' })
+    res.send('Stripe Checkout API is running!')
 })
 
 app.post('/checkout', async (req, res) => {
@@ -29,7 +30,7 @@ app.post('/checkout', async (req, res) => {
                 currency: 'usd',
                 product_data: {
                     name: item.name
-                    // images: [`http://localhost:3000/${encodeURIComponent(item.image)}`]
+                    images: [`https://raw.githubusercontent.com/edukated6/Dee-s-Treats-Website/main/${item.image}`]
                 },
                 unit_amount: Math.round(item.price * 100)
             },
@@ -44,8 +45,8 @@ app.post('/checkout', async (req, res) => {
             shipping_address_collection: {
                 allowed_countries: ['US']
             },
-            success_url: `http://localhost:3000/complete?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `http://localhost:3000/cancel`
+            success_url: `${process.env.BASE_URL || 'https://edukated6.github.io'}/complete?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.BASE_URL || 'https://edukated6.github.io'}/cancel`
         })
 
         res.redirect(session.url)
@@ -69,18 +70,18 @@ app.get('/complete', async (req, res) => {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Order Complete | Dee's Treats</title>
-        <link rel="icon" type="image/png" href="/svgs/dee treats logo.svg">
-        <link rel="stylesheet" href="/css/cartstyle.css">
+        <link rel="icon" type="image/png" href="https://edukated6.github.io/Dee-s-Treats-Website/svgs/dee%20treats%20logo.svg">
+        <link rel="stylesheet" href="https://edukated6.github.io/Dee-s-Treats-Website/css/cartstyle.css">
       </head>
       <body>
         <div class="main-hero-nav">
-          <a href="/index.html"><img class="logo" src="/pngs/Dee's Treats Logo 2026.png" alt="dee's treats logo" height="100" width="220"></a>
+          <a href="https://edukated6.github.io/Dee-s-Treats-Website/index.html"><img class="logo" src="https://edukated6.github.io/Dee-s-Treats-Website/pngs/Dee's%20Treats%20Logo%202026.png" alt="dee's treats logo" height="100" width="220"></a>
           <ul class="nav-list">
-            <li><a href="/index.html#Treats">Treats</a></li>
-            <li><a href="/index.html#review">Reviews</a></li>
-            <li><a href="/contact.html">Contact</a></li>
+            <li><a href="https://edukated6.github.io/Dee-s-Treats-Website/index.html#Treats">Treats</a></li>
+            <li><a href="https://edukated6.github.io/Dee-s-Treats-Website/index.html#review">Reviews</a></li>
+            <li><a href="https://edukated6.github.io/Dee-s-Treats-Website/contact.html">Contact</a></li>
           </ul>
-          <a href="/cart.html" class="cart-icon-wrapper"><img class="shopping-cart" src="/svgs/shopping cart.svg" alt="Shopping Icon" height="35" width="35"><span id="cart-count" class="cart-count">0</span></a>
+          <a href="https://edukated6.github.io/Dee-s-Treats-Website/cart.html" class="cart-icon-wrapper"><img class="shopping-cart" src="https://edukated6.github.io/Dee-s-Treats-Website/svgs/shopping%20cart.svg" alt="Shopping Icon" height="35" width="35"><span id="cart-count" class="cart-count">0</span></a>
         </div>
 
         <main>
@@ -88,7 +89,7 @@ app.get('/complete', async (req, res) => {
             <h2 class="cart-title">Thank You!</h2>
             <p style="font-size:1.8rem; color:#fff; filter: drop-shadow(1px 1px 1px black);">Your payment was successful and your order is confirmed.</p>
             <p style="font-size:1.2rem; color:#fff; margin-bottom:30px;">Your cart has been emptied so you can start a new order.</p>
-            <a href="/index.html" class="checkout-btn" style="display:inline-block; margin-top:20px;">Continue Shopping</a>
+            <a href="https://edukated6.github.io/Dee-s-Treats-Website/index.html" class="checkout-btn" style="display:inline-block; margin-top:20px;">Continue Shopping</a>
           </section>
         </main>
 
@@ -111,7 +112,7 @@ app.get('/complete', async (req, res) => {
 })
 
 app.get('/cancel', (req, res) => {
-    res.redirect('../cart.html')
+    res.redirect('https://edukated6.github.io/Dee-s-Treats-Website/cart.html')
 })
 
 app.listen(3000, () => console.log('Server started on port 3000'))
