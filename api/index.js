@@ -31,11 +31,11 @@ app.use(express.json())
 
 app.set('view engine', 'ejs')
 
-app.get('/', (req, res) => {
+app.get('/api/', (req, res) => {
     res.send('Stripe Checkout API is running!')
 })
 
-app.post('/checkout', async (req, res) => {
+app.post('/api/checkout', async (req, res) => {
     try {
         const cart = JSON.parse(req.body.cart || '[]')
         console.log('Cart received:', cart)
@@ -64,8 +64,8 @@ app.post('/checkout', async (req, res) => {
             shipping_address_collection: {
                 allowed_countries: ['US']
             },
-            success_url: `${process.env.BASE_URL || 'https://edukated6.github.io'}/complete?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.BASE_URL || 'https://edukated6.github.io'}/cancel`
+            success_url: `${process.env.BASE_URL || 'https://edukated6.github.io'}/api/complete?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.BASE_URL || 'https://edukated6.github.io'}/api/cancel`
         })
 
         res.redirect(session.url)
@@ -75,7 +75,7 @@ app.post('/checkout', async (req, res) => {
     }
 })
 
-app.get('/complete', async (req, res) => {
+app.get('/api/complete', async (req, res) => {
     const result = Promise.all([stripe.checkout.sessions.retrieve(req.query.session_id, { expand: ['payment_intent.payment_method'] }),
     stripe.checkout.sessions.listLineItems(req.query.session_id)
 ])
@@ -130,7 +130,7 @@ app.get('/complete', async (req, res) => {
     `)
 })
 
-app.get('/cancel', (req, res) => {
+app.get('/api/cancel', (req, res) => {
     res.redirect('https://edukated6.github.io/Dee-s-Treats-Website/cart.html')
 })
 
