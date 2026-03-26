@@ -37,10 +37,14 @@ app.get('/', (req, res) => {
 
 app.post('/checkout', async (req, res) => {
     try {
+        console.log('Checkout request received')
+        console.log('Request body:', req.body)
+
         const cart = JSON.parse(req.body.cart || '[]')
         console.log('Cart received:', cart)
 
         if (cart.length === 0) {
+            console.log('Cart is empty, returning error')
             return res.status(400).send('Cart is empty')
         }
 
@@ -64,9 +68,12 @@ app.post('/checkout', async (req, res) => {
             shipping_address_collection: {
                 allowed_countries: ['US']
             },
-            success_url: `${process.env.BASE_URL || 'https://edukated6.github.io'}/complete?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.BASE_URL || 'https://edukated6.github.io'}/cancel`
+            success_url: `https://dee-s-treats-website-git-main-edukated6s-projects.vercel.app/complete?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `https://dee-s-treats-website-git-main-edukated6s-projects.vercel.app/cancel`
         })
+
+        console.log('Stripe session created:', session.id)
+        console.log('Redirecting to:', session.url)
 
         res.redirect(session.url)
     } catch (error) {
