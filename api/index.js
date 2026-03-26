@@ -5,12 +5,22 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 const app = express()
 
 function getBaseUrl(req) {
-  if (process.env.BASE_URL) {
-    return process.env.BASE_URL
+  const envBase = (process.env.BASE_URL || '').trim()
+  if (envBase) {
+    return envBase.replace(/\/+$/, '')
   }
-  const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'https'
-  const host = req.headers.host
-  return `${protocol}://${host}`
+
+  const forwardedProto = (req.headers['x-forwarded-proto'] || '').toString().split(',')[0].trim()
+  const protocol = forwardedProto || req.protocol || 'https'
+  const forwardedHost = (req.headers['x-forwarded-host'] || '').toString().split(',')[0].trim()
+  const host = forwardedHost || req.get('host') || ''
+
+  if (host) {
+    return `${protocol}://${host}`
+  }
+
+  // Final fallback keeps checkout functional if proxy headers are unavailable.
+  return 'https://dee-s-treats-website-git-main-edukated6s-projects.vercel.app'
 }
 
 // Enable CORS for GitHub Pages and Vercel deployments
