@@ -7,7 +7,12 @@ const app = express()
 function getBaseUrl(req) {
   const envBase = (process.env.BASE_URL || '').trim()
   if (envBase) {
-    return envBase.replace(/\/+$/, '')
+    try {
+      const parsed = new URL(envBase)
+      return parsed.origin
+    } catch (error) {
+      console.warn('Ignoring invalid BASE_URL environment variable:', envBase)
+    }
   }
 
   const forwardedProto = (req.headers['x-forwarded-proto'] || '').toString().split(',')[0].trim()
@@ -16,7 +21,7 @@ function getBaseUrl(req) {
   const host = forwardedHost || req.get('host') || ''
 
   if (host) {
-    return `${protocol}://${host}`
+    return `${protocol}://${host}`.replace(/\/+$/, '')
   }
 
   // Final fallback keeps checkout functional if proxy headers are unavailable.
