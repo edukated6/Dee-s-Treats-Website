@@ -4,6 +4,15 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 const app = express()
 
+function getBaseUrl(req) {
+  if (process.env.BASE_URL) {
+    return process.env.BASE_URL
+  }
+  const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'https'
+  const host = req.headers.host
+  return `${protocol}://${host}`
+}
+
 // Enable CORS for GitHub Pages and Vercel deployments
 app.use((req, res, next) => {
   const allowedOrigins = [
@@ -37,6 +46,7 @@ app.get('/api/', (req, res) => {
 
 app.post('/api/checkout', async (req, res) => {
     try {
+    const baseUrl = getBaseUrl(req)
         const cart = JSON.parse(req.body.cart || '[]')
         console.log('Cart received:', cart)
 
@@ -64,8 +74,8 @@ app.post('/api/checkout', async (req, res) => {
             shipping_address_collection: {
                 allowed_countries: ['US']
             },
-            success_url: `${process.env.BASE_URL || 'https://edukated6.github.io'}/api/complete?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.BASE_URL || 'https://edukated6.github.io'}/api/cancel`
+          success_url: `${baseUrl}/api/complete?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${baseUrl}/api/cancel`
         })
 
         res.redirect(session.url)
@@ -76,13 +86,19 @@ app.post('/api/checkout', async (req, res) => {
 })
 
 app.get('/api/complete', async (req, res) => {
-    const result = Promise.all([stripe.checkout.sessions.retrieve(req.query.session_id, { expand: ['payment_intent.payment_method'] }),
-    stripe.checkout.sessions.listLineItems(req.query.session_id)
-])
+  try {
+    if (!req.query.session_id) {
+      return res.status(400).send('Missing session_id')
+    }
 
-    console.log(JSON.stringify(await result))
+    const result = await Promise.all([
+      stripe.checkout.sessions.retrieve(req.query.session_id, { expand: ['payment_intent.payment_method'] }),
+      stripe.checkout.sessions.listLineItems(req.query.session_id)
+    ])
 
-    res.send(`
+    console.log(JSON.stringify(result))
+
+        res.send(`
       <!DOCTYPE html>
       <html lang="en">
       <head>
@@ -128,6 +144,10 @@ app.get('/api/complete', async (req, res) => {
       </body>
       </html>
     `)
+    } catch (error) {
+        console.error('Complete page error:', error)
+        res.status(400).send('Unable to load completion page: ' + error.message)
+    }
 })
 
 app.get('/api/cancel', (req, res) => {
