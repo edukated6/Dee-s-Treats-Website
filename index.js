@@ -1,6 +1,6 @@
 require('dotenv').config()
 const express = require('express')
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder')
 
 const app = express()
 
