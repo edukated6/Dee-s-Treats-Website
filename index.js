@@ -35,6 +35,11 @@ app.get('/', (req, res) => {
     res.send('Stripe Checkout API is running!')
 })
 
+// To avoid "Cannot GET /checkout" on direct GET access
+app.get('/checkout', (req, res) => {
+    res.status(405).send('Use POST /checkout from the cart form (redirect to Stripe checkout).')
+})
+
 app.post('/checkout', async (req, res) => {
     try {
         console.log('Checkout request received')
