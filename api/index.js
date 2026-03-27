@@ -28,6 +28,25 @@ function getBaseUrl(req) {
   return 'https://dee-s-treats-website-git-main-edukated6s-projects.vercel.app'
 }
 
+function getStripeImageUrl(imagePath) {
+  const normalizedPath = (imagePath || '').toString().replace(/\\/g, '/').trim()
+  if (!normalizedPath) {
+    return null
+  }
+
+  const encodedPath = normalizedPath
+    .split('/')
+    .map(segment => encodeURIComponent(segment))
+    .join('/')
+
+  const rawUrl = `https://raw.githubusercontent.com/edukated6/Dee-s-Treats-Website/main/${encodedPath}`
+  try {
+    return new URL(rawUrl).toString()
+  } catch (error) {
+    return null
+  }
+}
+
 // Enable CORS for GitHub Pages and Vercel deployments
 app.use((req, res, next) => {
   const allowedOrigins = [
@@ -69,17 +88,24 @@ app.post('/api/checkout', async (req, res) => {
             return res.status(400).send('Cart is empty')
         }
 
-        const line_items = cart.map(item => ({
+        const line_items = cart.map(item => {
+          const stripeImageUrl = getStripeImageUrl(item.image)
+          const product_data = {
+            name: item.name
+          }
+          if (stripeImageUrl) {
+            product_data.images = [stripeImageUrl]
+          }
+
+          return {
             price_data: {
-                currency: 'usd',
-                product_data: {
-                    name: item.name,
-                    images: [`https://raw.githubusercontent.com/edukated6/Dee-s-Treats-Website/main/${item.image}`]
-                },
-                unit_amount: Math.round(item.price * 100)
+              currency: 'usd',
+              product_data,
+              unit_amount: Math.round(item.price * 100)
             },
             quantity: item.quantity
-        }))
+          }
+        })
 
         console.log('Line items:', line_items)
 
