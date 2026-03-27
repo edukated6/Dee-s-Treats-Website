@@ -161,7 +161,7 @@ app.get('/api/complete', async (req, res) => {
         </div>
 
         <main>
-          <section class="cart-section" style="padding-top:100px; text-align:center;">
+          <section class="cart-section" style="text-align:center;">
             <h2 class="cart-title">Thank You!</h2>
             <p style="font-size:1.8rem; color:#fff; filter: drop-shadow(1px 1px 1px black);">Your payment was successful and your order is confirmed.</p>
             <p style="font-size:1.2rem; color:#fff; margin-bottom:30px;">Your cart has been emptied so you can start a new order.</p>
