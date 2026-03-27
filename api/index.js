@@ -169,7 +169,7 @@ app.get('/api/complete', async (req, res) => {
           </section>
         </main>
 
-        <footer class="footer" style="text-align:center; padding:20px; color:white; background:rgb(255, 255, 255); margin-bottom: -100px;">
+        <footer class="footer" style="text-align:center; padding:20px; color:white; background:rgb(255, 255, 255); margin-bottom: 100px;">
           <p class="copyright">©2026 Dee's Treat · All Rights Reserved</p>
         </footer>
 
