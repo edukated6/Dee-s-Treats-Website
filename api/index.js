@@ -161,7 +161,7 @@ app.get('/api/complete', async (req, res) => {
         </div>
 
         <main>
-          <section class="cart-section" style="text-align:center;">
+          <section class="cart-section" style="text-align:center; margin-bottom: 200px;">
             <h2 class="cart-title">Thank You!</h2>
             <p style="font-size:1.8rem; color:#fff; filter: drop-shadow(1px 1px 1px black);">Your payment was successful and your order is confirmed.</p>
             <p style="font-size:1.2rem; color:#fff; margin-bottom:30px;">Your cart has been emptied so you can start a new order.</p>
@@ -169,7 +169,7 @@ app.get('/api/complete', async (req, res) => {
           </section>
         </main>
 
-        <footer class="footer" style="text-align:center; padding:20px; color:white; background:rgb(255, 255, 255); margin-bottom: 100px;">
+        <footer class="footer" style="text-align:center; padding:20px; color:white; background:rgb(255, 255, 255);">
           <p class="copyright">©2026 Dee's Treat · All Rights Reserved</p>
         </footer>
 
